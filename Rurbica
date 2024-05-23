@@ -1,0 +1,120 @@
+import java.util.Scanner;
+
+public class RubricaTelefonica {
+    public Contatto[] contattiVisibili;
+    public Contatto[] contattiNascosti;
+    public String[] chiamateRecenti;
+    public String password;
+    public int iContatti = 0;
+    public int iContattiNascosti = 0;
+    public int iCalls = 0;
+
+    RubricaTelefonica(int lung) {
+        contattiVisibili = new Contatto[lung];
+        contattiNascosti = new Contatto[lung];
+        chiamateRecenti = new String[lung];
+    }
+    public void impostaPassword() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Imposta una password per la rubrica: ");
+        password = scanner.nextLine();
+    }
+
+    public boolean verificaPassword() {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Inserisci la password: ");
+        String pwd = scanner.nextLine();
+        return pwd.equals(password);
+    }
+
+
+    public void nuovaRubrica(int lung) {
+        Scanner scanner = new Scanner(System.in);
+        for (int i = 0; i < lung; i++) {
+            System.out.print("Inserisci il nome del contatto: ");
+            String nome = scanner.nextLine();
+            System.out.print("Inserisci il numero del contatto: ");
+            String numero = scanner.nextLine();
+            System.out.print("Vuoi nascondere questo contatto? (si/no): ");
+            boolean nascosto = scanner.nextLine().equalsIgnoreCase("si");
+
+            if (nascosto) {
+                contattiNascosti[iContattiNascosti++] = new Contatto(nome, numero, true);
+            } else {
+                contattiVisibili[iContatti++] = new Contatto(nome, numero, false);
+            }
+        }
+    }
+
+    public void visualizzaNumeri() {
+        if (verificaPassword()) {
+            System.out.println("Contatti visibili:");
+            for (int i = 0; i < iContatti; i++) {
+                System.out.println(contattiVisibili[i].info());
+            }
+            System.out.println("Contatti nascosti:");
+            for (int i = 0; i < iContattiNascosti; i++) {
+                System.out.println(contattiNascosti[i].info());
+            }
+        } else {
+            System.out.println("Password errata!");
+        }
+    }
+
+    public void spostaNumero() {
+        if (verificaPassword()) {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Inserisci il numero da spostare: ");
+            String numero = scanner.nextLine();
+            boolean trovato = false;
+
+            for (int i = 0; i < iContatti; i++) {
+                if (contattiVisibili[i].numero.equals(numero)) {
+                    contattiNascosti[iContattiNascosti++] = contattiVisibili[i];
+                    contattiVisibili[i] = contattiVisibili[--iContatti];
+                    trovato = true;
+                    break;
+                }
+            }
+            if (!trovato) {
+                for (int i = 0; i < iContattiNascosti; i++) {
+                    if (contattiNascosti[i].numero.equals(numero)) {
+                        contattiVisibili[iContatti++] = contattiNascosti[i];
+                        contattiNascosti[i] = contattiNascosti[--iContattiNascosti];
+                        break;
+                    }
+                }
+            }
+        } else {
+            System.out.println("Password errata!");
+        }
+    }
+
+    public void aggiungiChiamata(String numero) {
+        if (iCalls < chiamateRecenti.length) {
+            chiamateRecenti[iCalls++] = numero;
+        } else {
+            System.arraycopy(chiamateRecenti, 1, chiamateRecenti, 0, chiamateRecenti.length - 1);
+            chiamateRecenti[chiamateRecenti.length - 1] = numero;
+        }
+    }
+
+    public void UltimeChiamate() {
+        if (verificaPassword()) {
+            System.out.println("Ultime chiamate (con contatti nascosti):");
+        } else {
+            System.out.println("Ultime chiamate (solo contatti visibili):");
+        }
+        for (int i = 0; i < iCalls; i++) {
+            boolean nascosto = false;
+            for (int j = 0; j < iContattiNascosti; j++) {
+                if (chiamateRecenti[i].equals(contattiNascosti[j].numero)) {
+                    nascosto = true;
+                    break;
+                }
+            }
+            if (!nascosto || verificaPassword()) {
+                System.out.println(chiamateRecenti[i]);
+            }
+        }
+    }
