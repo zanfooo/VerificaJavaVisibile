@@ -1,0 +1,13 @@
+public class Contatto {
+    String nome;
+    String numero;
+    boolean nascosto;
+    Contatto(String nome, String numero, boolean nascosto) {
+        this.nome = nome;
+        this.numero = numero;
+        this.nascosto = nascosto;
+    }
+    String info() {
+        return nome + " : " + numero;
+    }
+}
