@@ -1,0 +1,51 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Quanti numeri vuoi inserire nella rubrica? ");
+        int lung = scanner.nextInt();
+        scanner.nextLine();
+
+        RubricaTelefonica rubrica = new RubricaTelefonica(lung);
+        rubrica.impostaPassword();
+
+        boolean uscita = false;
+        while (!uscita) {
+            System.out.println("\nMenu:");
+            System.out.println("1. Nuova rubrica");
+            System.out.println("2. Visualizza numeri");
+            System.out.println("3. Sposta numero");
+            System.out.println("4. Ultime chiamate");
+            System.out.println("5. Esci");
+            System.out.print("Scegli un'opzione: ");
+            int scelta = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (scelta) {
+                case 1:
+                    rubrica.nuovaRubrica(lung);
+                    break;
+                case 2:
+                    rubrica.visualizzaNumeri();
+                    break;
+                case 3:
+                    rubrica.spostaNumero();
+                    break;
+                case 4:
+                    System.out.print("Inserisci il numero chiamato da aggiungere alla lista delle ultime chiamate: ");
+                    String numero = scanner.nextLine();
+                    rubrica.aggiungiChiamata(numero);
+                    rubrica.UltimeChiamate();
+                    break;
+                case 5:
+                    uscita = true;
+                    break;
+                default:
+                    System.out.println("Inserimento errato.");
+            }
+        }
+        System.out.println("Programma chiuso");
+    }
+}
+
